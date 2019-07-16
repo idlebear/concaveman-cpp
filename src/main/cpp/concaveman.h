@@ -428,7 +428,7 @@ public:
     }
 
     ~CircularList() {
-        std::cout << "~CircularList()" << std::endl;
+//        std::cout << "~CircularList()" << std::endl;
         auto node = m_last;
         while (true) {
             // std::cout << (i++) << std::endl;
@@ -488,7 +488,7 @@ template<class T, int MAX_CHILDREN> std::vector<std::array<T, 2>> concaveman(
     typedef CircularList<node_type> circ_list_type;
     typedef circ_elem_type *circ_elem_ptr_type;
 
-    std::cout << "concaveman()" << std::endl;
+//    std::cout << "concaveman()" << std::endl;
 
     if (hull.size() == points.size()) {
         std::vector<point_type> res;
@@ -513,9 +513,9 @@ template<class T, int MAX_CHILDREN> std::vector<std::array<T, 2>> concaveman(
         queue.push_back(last);
     }
 
-    std::cout << "Starting hull: ";
+//    std::cout << "Starting hull: ";
     for (auto elem = last->next(); ; elem=elem->next()) {
-        std::cout << elem->data().p[0] << " " << elem->data().p[1] << std::endl;
+//        std::cout << elem->data().p[0] << " " << elem->data().p[1] << std::endl;
         if (elem == last)
             break;
     }
@@ -550,7 +550,7 @@ template<class T, int MAX_CHILDREN> std::vector<std::array<T, 2>> concaveman(
 
         if (ok && std::min(getSqDist(p, a), getSqDist(p, b)) <= maxSqLen) {
 
-            std::cout << "Modifying hull, p: " << p[0] << " " << p[1] << std::endl;
+//            std::cout << "Modifying hull, p: " << p[0] << " " << p[1] << std::endl;
 
             queue.push_back(elem);
             queue.push_back(elem->insert(p));
@@ -597,7 +597,7 @@ template<class T, int MAX_CHILDREN> std::array<T, 2> findCandidate(
     typedef std::reference_wrapper<const_tree_type> tree_ref_type;
     typedef std::tuple<T, tree_ref_type> tuple_type;
 
-    std::cout << "findCandidate(), maxDist: " << maxDist << std::endl;
+//    std::cout << "findCandidate(), maxDist: " << maxDist << std::endl;
 
     ok = false;
 
