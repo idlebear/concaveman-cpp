@@ -2,12 +2,13 @@
 g++ -std=c++11 -I../../../main/cpp -o test_concaveman
 exit 0
 #endif
+#include "concaveman.h"
 
 static void test_00_rtree_basic() {
-    typedef rtree<float, 2, 8, intptr_t> myrtree;
-    typedef rtree<float, 2, 16, intptr_t> myrtree2;
-    typedef rtree<float, 2, 5, intptr_t> myrtree3;
-    typedef rtree<float, 2, 32, intptr_t> myrtree4;
+    typedef ConcaveMan::rtree<float, 2, 8, intptr_t> myrtree;
+    typedef ConcaveMan::rtree<float, 2, 16, intptr_t> myrtree2;
+    typedef ConcaveMan::rtree<float, 2, 5, intptr_t> myrtree3;
+    typedef ConcaveMan::rtree<float, 2, 32, intptr_t> myrtree4;
     myrtree tree;
     myrtree2 tree2;
     myrtree3 tree3;
@@ -75,19 +76,19 @@ static void test_00_rtree_basic() {
 static void test_03_sqSegDist() {
     std::cout << "test_03_sqSegDist() : ";
 
-    auto a = sqSegDist<double>({ 0, 0 }, { 0, 1 }, { 1, 0 });
+    auto a = ConcaveMan::sqSegDist<double>({ 0, 0 }, { 0, 1 }, { 1, 0 });
     std::cout << "a: " << a << std::endl;
     assert(a == 0.5);
 
-    auto b = sqSegDist<double>({ 0, 1 }, { 0, 1 }, { 1, 0 });
+    auto b = ConcaveMan::sqSegDist<double>({ 0, 1 }, { 0, 1 }, { 1, 0 });
     std::cout << "b: " << b << std::endl;
     assert(b == 0);
 
-    auto c = sqSegDist<double>({ -1, 0 }, { 0, 0 }, { 0, 1 });
+    auto c = ConcaveMan::sqSegDist<double>({ -1, 0 }, { 0, 0 }, { 0, 1 });
     std::cout << "c: " << c << std::endl;
     assert(c == 1);
 
-    auto d = sqSegDist<double>({ -1, -1 }, { 0, 0 }, { 0, 1 });
+    auto d = ConcaveMan::sqSegDist<double>({ -1, -1 }, { 0, 0 }, { 0, 1 });
     std::cout << "d: " << d << std::endl;
     assert(d == 2);
 
@@ -103,16 +104,16 @@ static void test_04_sqSegSegDist() {
 static void test_05_CircularList() {
     std::cout << "test_05_CircularList() : ";
     typedef double T;
-    typedef Node<T> node_type;
+    typedef ConcaveMan::Node<T> node_type;
     typedef typename node_type::point_type point_type;
-    auto lst = make_unique<CircularList<node_type>>();
+    auto lst = ConcaveMan::make_unique<ConcaveMan::CircularList<node_type>>();
     auto a = lst->insert(nullptr, point_type { 1, 2 });
     auto b = a->insert(point_type { 3, 4 });
     auto c = b->insert(point_type { 5, 6 });
     std::cout << a->data().p[0] << " " <<
         b->data().p[0] << " " << c->data().p[0] << std::endl;
     {
-        std::unique_ptr<CircularList<node_type>> taker(std::move(lst));
+        std::unique_ptr<ConcaveMan::CircularList<node_type>> taker(std::move(lst));
     }
     assert(lst.get() == nullptr);
     std::cout << "PASSED" << std::endl;
@@ -122,9 +123,9 @@ static void test_05_CircularList() {
 static void test_06_priority_queue() {
     std::cout << "test_06_priority_queue() : ";
     typedef double T;
-    typedef Node<T> node_type;
+    typedef ConcaveMan::Node<T> node_type;
     typedef std::tuple<T, node_type> tuple_type;
-    std::priority_queue<tuple_type, std::vector<tuple_type>, compare_first<tuple_type>> queue;
+    std::priority_queue<tuple_type, std::vector<tuple_type>, ConcaveMan::compare_first<tuple_type>> queue;
 
     queue.push(std::make_tuple(-5.0, node_type({ 1, 2 })));
     queue.push(std::make_tuple(-4.0, node_type({ 3, 4 })));
@@ -154,7 +155,7 @@ static void test_07_concaveman() {
     std::vector<int> hull {
         0, 1, 3
     };
-    auto concave = concaveman<T, 16>(points, hull, 2, 1);
+    auto concave = ConcaveMan::concaveman<T, 16>(points, hull, 2, 1);
     for (auto &p : concave) {
         std::cout << p[0] << " " << p[1] << std::endl;
     }
@@ -165,9 +166,9 @@ static void test_07_concaveman() {
 static void test_08_intersects() {
     std::cout << "test_08_intersects() : ";
 
-    std::cout << intersects<double>({ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 }) << std::endl;
-    std::cout << intersects<double>({ 0, 0 }, { 1, 0 }, { 0, 0 }, { 1, 0 }) << std::endl;
-    std::cout << intersects<double>({ 0, 0 }, { 1, 0 }, { 0.5, -0.5 }, { 0.5, 0.5 }) << std::endl;
+    std::cout << ConcaveMan::intersects<double>({ 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 }) << std::endl;
+    std::cout << ConcaveMan::intersects<double>({ 0, 0 }, { 1, 0 }, { 0, 0 }, { 1, 0 }) << std::endl;
+    std::cout << ConcaveMan::intersects<double>({ 0, 0 }, { 1, 0 }, { 0.5, -0.5 }, { 0.5, 0.5 }) << std::endl;
 
     std::cout << "PASSED" << std::endl;
 }
@@ -176,15 +177,13 @@ static void test_08_intersects() {
 static void test_09_orient2d() {
     std::cout << "test_09_orient2d() : ";
 
-    std::cout << orient2d<double>({ 0, 0 }, { 1, 0 }, { 0, 1 }) << std::endl;
-    std::cout << orient2d<double>({ 0, 0 }, { 1, 0 }, { 0, 0 }) << std::endl;
-    std::cout << orient2d<double>({ 0, 0 }, { 1, 0 }, { 0.5, -0.5 }) << std::endl;
-    std::cout << orient2d<double>({ 0, 1 }, { 1, 0 }, { 0, 0 }) << std::endl;
+    std::cout << ConcaveMan::orient2d<double>({ 0, 0 }, { 1, 0 }, { 0, 1 }) << std::endl;
+    std::cout << ConcaveMan::orient2d<double>({ 0, 0 }, { 1, 0 }, { 0, 0 }) << std::endl;
+    std::cout << ConcaveMan::orient2d<double>({ 0, 0 }, { 1, 0 }, { 0.5, -0.5 }) << std::endl;
+    std::cout << ConcaveMan::orient2d<double>({ 0, 1 }, { 1, 0 }, { 0, 0 }) << std::endl;
 
     std::cout << "PASSED" << std::endl;
 }
-
-#if 0
 
 int main() {
     // test_00_rtree_basic();
@@ -197,5 +196,3 @@ int main() {
     // test_08_intersects();
     // test_09_orient2d();
 }
-
-#endif
